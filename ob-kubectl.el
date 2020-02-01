@@ -47,7 +47,7 @@
 
 
 ;; optionally define a file extension for this language
-(add-to-list 'org-babel-tangle-lang-exts '("kubectl" . "kubectl"))
+(add-to-list 'org-babel-tangle-lang-exts '("kubectl" . "yaml"))
 
 ;; optionally declare default header arguments for this language
 (defvar org-babel-default-header-args:kubectl '()) ; TODO use this for input in stead of variable
@@ -83,13 +83,18 @@
 (defun org-babel-execute:kubectl (body params)
   "Execute a block of kubectl code with org-babel.
 This function is called by `org-babel-execute-src-block'"
-  (message "executing kubectl source code block")
-    (org-babel-eval-kubectl "kubectl apply -f" body)
-    ;; when forming a shell command, or a fragment of code in some
-    ;; other language, please preprocess any file names involved with
-    ;; the function `org-babel-process-file-name'. (See the way that
-    ;; function is used in the language files)
+  (let* ((vars (org-babel--get-vars params))
+	 (action (if (assoc 'action vars) (cdr (assoc 'action vars)) "apply"))
+	 (context (if (assoc 'context vars) (concat " --context='" (cdr (assoc 'context vars)) "' ") nil))
+	 )
+    (message "executing kubectl source code block")
+    (org-babel-eval-kubectl (concat "kubectl " context action " -f" ) body)
     )
+  ;; when forming a shell command, or a fragment of code in some
+  ;; other language, please preprocess any file names involved with
+  ;; the function `org-babel-process-file-name'. (See the way that
+  ;; function is used in the language files)
+  )
 
 
 (defun org-babel-eval-kubectl (cmd yaml)
@@ -120,28 +125,6 @@ STDERR with `org-babel-eval-error-notify'."
 	; return the contents of output file
 	(with-current-buffer output-file (buffer-string)))))
 
-
-;; This function should be used to assign any variables in params in
-;; the context of the session environment.
-(defun org-babel-prep-session:kubectl (session params)
-  "Prepare SESSION according to the header arguments specified in PARAMS."
-  )
-
-(defun org-babel-kubectl-var-to-kubectl (var)
-  "Convert an elisp var into a string of kubectl source code
-specifying a var of the same value."
-  (format "%S" var))
-
-(defun org-babel-kubectl-table-or-string (results)
-  "If the results look like a table, then convert them into an
-Emacs-lisp table, otherwise return the results as a string."
-  )
-
-(defun org-babel-kubectl-initiate-session (&optional session)
-  "If there is not a current inferior-process-buffer in SESSION then create.
-Return the initialized session."
-  (unless (string= session "none")
-    ))
 
 (provide 'ob-kubectl)
 ;;; ob-kubectl.el ends here
