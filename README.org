@@ -1,3 +1,32 @@
 * Ob-kubectl
 
-Org babel extension to apply kubectl to org babel source blocks.
+Org babel extension to apply kubectl to org babel source
+blocks. Calling ~C-c C-c~ on kubectl source blocks calls ~kubectl apply -f~
+on that block. To call ~delete~ instead use ~:var action="delete"~ as
+a header arg. To specify a particular context use ~:var context="your-context"~.
+
+: #+begin_src kubectl :var action="delete" :var context="microk8s"
+: apiVersion: serving.knative.dev/v1alpha1
+: kind: Service
+: metadata:
+:   name: autoscale-go
+:   namespace: default
+: spec:
+:   template:
+:     metadata:
+:       annotations:
+:         # Knative concurrency-based autoscaling (default).
+:         autoscaling.knative.dev/class: kpa.autoscaling.knative.dev
+:         autoscaling.knative.dev/metric: concurrency
+:         # Target 10 requests in-flight per pod.
+:         autoscaling.knative.dev/target: "10"
+:         # Disable scale to zero with a minScale of 1.
+:         autoscaling.knative.dev/minScale: "1"
+:         # Limit scaling to 100 pods.
+:         autoscaling.knative.dev/maxScale: "100"
+:     spec:
+:       containers:
+:         - image: gcr.io/knative-samples/autoscale-go:0.1
+:  #+end_src
+
+Example derived from: https://knative.dev/docs/serving/samples/autoscale-go/index.html
