@@ -33,11 +33,11 @@
 
 
 ;;; Code:
-(require 'ob)
-(require 'ob-ref)
-(require 'ob-comint)
-(require 'ob-eval)
-(require 's)
+;(require 'ob)
+;(require 'ob-ref)
+;(require 'ob-comint)
+;(require 'ob-eval)
+;(require 's)
 
 ;; possibly require modes required for your language
 (define-derived-mode kubectl-mode yaml-mode "kubectl"
@@ -58,7 +58,7 @@
 (defun org-babel-expand-body:kubectl (body params &optional processed-params)
   "Expand BODY according to PARAMS, return the expanded body."
   ;(require 'inf-kubectl) : TODO check if needed
-  body ; TODO translate params to xml variables
+  body ; TODO translate params to yaml variables
 )
 
 ;; This is the main function which is called to evaluate a code
@@ -84,32 +84,26 @@
   "Execute a block of kubectl code with org-babel.
 This function is called by `org-babel-execute-src-block'"
   (message "executing kubectl source code block")
-  (let*
-      ((xml (cdr (cdr (assoc :var params) ) ))
-       (xml (s-replace-regexp "^#\+.*\n" "" xml))) ; remove orgmode markup from input
-
-    (org-babel-eval-kubectl "kubectlproc" body xml)
+    (org-babel-eval-kubectl "kubectl apply -f" body)
     ;; when forming a shell command, or a fragment of code in some
     ;; other language, please preprocess any file names involved with
     ;; the function `org-babel-process-file-name'. (See the way that
     ;; function is used in the language files)
-    ))
-;
+    )
 
-(defun org-babel-eval-kubectl (cmd body xml)
+
+(defun org-babel-eval-kubectl (cmd yaml)
   "Run CMD on BODY.
 If CMD succeeds then return its results, otherwise display
 STDERR with `org-babel-eval-error-notify'."
   (let ((err-buff (get-buffer-create " *Org-Babel Error*"))
-	(xml-file (org-babel-temp-file "ob-kubectl-xml-"))
-	(xsl-file (org-babel-temp-file "ob-kubectl-xsl-"))
+	(yaml-file (org-babel-temp-file "ob-kubectl-yaml-"))
 	(output-file (org-babel-temp-file "ob-kubectl-out-"))
 	exit-code)
-    (with-temp-file xsl-file (insert body))
-    (with-temp-file xml-file (insert xml))
+    (with-temp-file yaml-file (insert yaml))
     (with-current-buffer err-buff (erase-buffer))
     (setq exit-code
-	  (shell-command (concat "kubectlproc " xsl-file " " xml-file) output-file err-buff)
+	  (shell-command (concat cmd " " yaml-file) output-file err-buff)
 	  )
       (if (or (not (numberp exit-code)) (> exit-code 0))
 	  (progn
