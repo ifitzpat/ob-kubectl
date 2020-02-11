@@ -84,8 +84,8 @@
   "Execute a block of kubectl code with org-babel.
 This function is called by `org-babel-execute-src-block'"
   (let* ((vars (org-babel--get-vars params))
-	 (action (if (assoc 'action vars) (cdr (assoc 'action vars)) "apply"))
-	 (context (if (assoc 'context vars) (concat " --context='" (cdr (assoc 'context vars)) "' ") nil))
+	 (action (if (assoc :action params) (cdr (assoc :action params)) "apply"))
+	 (context (if (assoc :context params) (concat " --context='" (cdr (assoc :context params)) "' ") nil))
 	 )
     (message "executing kubectl source code block")
     (org-babel-eval-kubectl (concat "kubectl " context action " -f" ) body)

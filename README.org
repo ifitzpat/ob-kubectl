@@ -2,10 +2,10 @@
 
 Org babel extension to apply kubectl to org babel source
 blocks. Calling ~C-c C-c~ on kubectl source blocks calls ~kubectl apply -f~
-on that block. To call ~delete~ instead use ~:var action="delete"~ as
-a header arg. To specify a particular context use ~:var context="your-context"~.
+on that block. To call ~delete~ instead use ~:action delete~ as
+a header arg. To specify a particular context use ~:context your-context~.
 
-: #+begin_src kubectl :var action="delete" :var context="microk8s"
+: #+begin_src kubectl :action delete :context microk8s
 : apiVersion: serving.knative.dev/v1alpha1
 : kind: Service
 : metadata:
