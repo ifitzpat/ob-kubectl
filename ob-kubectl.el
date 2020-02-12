@@ -33,11 +33,11 @@
 
 
 ;;; Code:
-;(require 'ob)
+(require 'ob)
 ;(require 'ob-ref)
 ;(require 'ob-comint)
 ;(require 'ob-eval)
-;(require 's)
+(require 'yaml-mode)
 
 ;; possibly require modes required for your language
 (define-derived-mode kubectl-mode yaml-mode "kubectl"
