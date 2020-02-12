@@ -50,7 +50,7 @@
 (add-to-list 'org-babel-tangle-lang-exts '("kubectl" . "yaml"))
 
 ;; optionally declare default header arguments for this language
-(defvar org-babel-default-header-args:kubectl '()) ; TODO use this for input in stead of variable
+(defvar org-babel-default-header-args:kubectl '((:action . "apply")(:context . nil)))
 
 ;; This function expands the body of a source code block by doing
 ;; things like prepending argument definitions to the body, it should
