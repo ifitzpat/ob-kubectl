@@ -5,7 +5,7 @@
 ;; Author: Dr. Ian FitzPatrick
 ;; Keywords: literate programming, reproducible research
 ;; Homepage: https://orgmode.org
-;; Version: 0.01
+;; Version: 0.02
 
 ;;; License:
 
