@@ -1,7 +1,36 @@
 * Ob-kubectl
 
 Org babel extension to apply kubectl to org babel source
-blocks. Calling ~C-c C-c~ on kubectl source blocks calls ~kubectl apply -f~
+blocks.
+
+** Getting Started
+
+*** Prerequisites
+
+ - kubectl
+
+Please refer to [[https://kubernetes.io/docs/tasks/tools/install-kubectl/][this page]] for more information on installing ~kubectl~.
+
+*** Installation
+
+Recommended install via [[https://github.com/jwiegly/use-package][use-package]] and [[https://github.com/quelpa/quelpa][quelpa]].
+
+   #+begin_src emacs-lisp
+(use-package ob-kubectl
+  :ensure-system-package kubectl
+  :ensure t
+  :defer t
+  :quelpa ((ob-kubectl :fetcher github :repo "ifitzpat/ob-kubectl") :upgrade t)
+  :config
+  (add-to-list 'org-babel-load-languages '(kubectl . t))
+  (org-babel-do-load-languages 'org-babel-load-languages org-babel-load-languages)
+)
+   #+end_src
+
+
+** Usage
+
+Calling ~C-c C-c~ on kubectl source blocks calls ~kubectl apply -f~
 on that block. To call ~delete~ instead use ~:action delete~ as
 a header arg. To specify a particular context use ~:context your-context~.
 
@@ -30,3 +59,23 @@ a header arg. To specify a particular context use ~:context your-context~.
 :  #+end_src
 
 Example derived from: https://knative.dev/docs/serving/samples/autoscale-go/index.html
+
+** Contributing
+
+Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are extremely appreciated.
+
+ 1. Fork the Project
+ 2. Create your Feature Branch (git checkout -b feature/AmazingFeature)
+ 3. Commit your Changes (git commit -m 'Add some AmazingFeature')
+ 4. Push to the Branch (git push origin feature/AmazingFeature)
+ 5. Open a Pull Request
+
+** License
+
+Distributed under the GPLv3. See LICENSE for more information.
+
+** Contact
+
+Dr. Ian FitzPatrick - @ifitzpat - ian@ianfitzpatrick.eu
+
+Project Link: https://github.com/fitzpat/ob-kubectl
